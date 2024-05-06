@@ -42,9 +42,6 @@ function logout() {
 }
 
 
-
-
-
 //function verificarUsuarioLogado() {
 //    const nomeUsuario = localStorage.getItem('nomeUsuario');
 //    if (nomeUsuario) {

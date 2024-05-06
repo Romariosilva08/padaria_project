@@ -227,18 +227,6 @@ form.addEventListener('submit', function (e) {
 });
 
 
-//// Recupere o nome do usuário armazenado no localStorage
-//let nomeUsuario = localStorage.getItem('nomeUsuario');
-
-//// Verifique se o nome do usuário existe antes de exibi-lo
-//if (nomeUsuario) {
-//    // Encontre o elemento onde deseja exibir o nome do usuário e defina seu conteúdo como o nome do usuário
-//    document.getElementById('nome-usuario').textContent = `Olá, ${nomeUsuario}!`;
-//}
-
-
-
-
 // Elementos do DOM
 const cadastroForm = document.getElementById('cadastro-form');
 const loginForm = document.getElementById('login-form');
@@ -255,16 +243,6 @@ function toggleForms(event) {
 // Eventos de clique para alternar entre Cadastro e Login
 toggleLoginLink.addEventListener('click', toggleForms);
 toggleCadastroLink.addEventListener('click', toggleForms);
-
-
-
-
-
-
-
-
-
-
 
 document.getElementById('btn-login').addEventListener('click', function (e) {
     e.preventDefault();
@@ -300,44 +278,6 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
                 throw error;
             }
         })
-        //.then((data) => {
-        //    console.log(data.token); // Access the token like this
-        //    document.getElementById('nome-usuario').innerText = `Olá, ${ data.nome }`
-
-
-        //.then((data) => {
-        //    console.log(data); // Exibe o objeto data no console
-        //    if (data && data.nome) {
-        //        console.log(data.token); // Access the token like this
-        //        document.getElementById('nome-usuario').innerText = `Olá, ${data.nome}`;
-
-        //        // Redirecionar o usuário para a página principal após o login bem-sucedido
-        //        window.location.href = 'https://localhost:7039/index.html';
-        //    } else {
-        //        console.error('O objeto de dados não contém a propriedade "nome".', data);
-        //    }
-        //})
-
-        //.then((data) => {
-        //    console.log(data); // Exibe o objeto data no console
-        //    if (data && data.nome) {
-        //        console.log(data.token); // Access the token like this
-
-        //        // Salvar o nome do usuário no armazenamento local para exibir posteriormente
-        //        localStorage.setItem('nomeUsuario', data.nome);
-
-        //        // Atualize o conteúdo do nome do usuário no header
-        //        //document.getElementById('nome-usuario').textContent = `Seja bem-vindo, ${data.nome}!`;
-
-        //        // Não redirecione imediatamente, pois queremos exibir o nome do usuário primeiro
-        //        window.location.href = 'https://localhost:7039/index.html';
-
-        //        // Atualize o conteúdo do nome do usuário no header
-        //        nomeUsuarioElement.textContent = `Seja bem-vindo, ${data.nome}!`;
-        //    } else {
-        //        console.error('O objeto de dados não contém a propriedade "nome".', data);
-        //    }
-    //});
 
         .then((data) => {
             console.log(data); // Exibe o objeto data no console
@@ -371,39 +311,7 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//Implementando
 // Realiza uma requisição GET para a rota da API de usuários
 //fetch('http://localhost:5284/api/usuarios', {
 //    method: 'GET',

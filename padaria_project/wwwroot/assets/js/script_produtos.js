@@ -2,8 +2,6 @@
 let resize = false
 let widthTabela;
 
-
-
 window.addEventListener("DOMContentLoaded", async () => {
     await carregaItensEstoque();
 
@@ -67,8 +65,6 @@ async function criarProduto(produto) {
     }
 }
 
-
-
 async function deletarProduto(id) {
     try {
         const URL = 'http://localhost:5284/api/produtos/' + id;
@@ -95,8 +91,6 @@ async function deletarProduto(id) {
     }
 }
 
-
-
 function chamaAlert(classe, mensagem) {
     // Criar elemento de alerta
     const alertElement = $('<div class="alert ' + classe + '" role="alert">' + mensagem + '</div>');
@@ -112,10 +106,9 @@ function chamaAlert(classe, mensagem) {
     }, 5000);
 }
 
-
 async function carregaItensEstoque() {
     try {
-        const dataProdutos = await obterProdutosDaAPI(); // Adicione os parênteses aqui para chamar a função
+        const dataProdutos = await obterProdutosDaAPI(); 
         console.log(dataProdutos);
         await renderizaTabelaItens(dataProdutos);
         renderizaDataTable();
@@ -124,8 +117,6 @@ async function carregaItensEstoque() {
         chamaAlert('alert-danger', 'Problemas ao carregar o painel!');
     }
 }
-
-
 
 async function renderizaTabelaItens(dataProdutos) {
     if ($.fn.DataTable.isDataTable('#productsDatatable')) {
@@ -301,9 +292,6 @@ $('#btnFecharModal').click(function () {
 });
 
 
-
-
-
 let formNovoProduto = document.getElementById('formNovoProduto');
 let nomeProdutoInput = document.getElementById('nomeProduto');
 let categoriaProdutoInput = document.getElementById('categoriaProduto');
@@ -328,7 +316,6 @@ document.getElementById('btnSalvarNovoProduto').addEventListener('click', async 
         // Converter a data para o formato ISOString
         let dataProducaoISOString = dataProducaoDate.toISOString();
 
-
         const produto = {
             nome: nomeProdutoInput.value,
             categoria: categoriaProdutoInput.value,
@@ -337,7 +324,7 @@ document.getElementById('btnSalvarNovoProduto').addEventListener('click', async 
             quantidade: parseInt(quantidadeProdutoInput.value)
         };
 
-        console.log("Produto object:", produto); // Adiciona um log para verificar se o objeto do produto está sendo criado corretamente
+        console.log("Produto object:", produto); 
         try {
             const novoProduto = await criarProduto(produto);
             console.log(novoProduto);
@@ -366,8 +353,6 @@ function highlightRequiredFields() {
         }
     });
 }
-
-
 
 function clearFormFields() {
     nomeProdutoInput.value = '';
@@ -429,7 +414,6 @@ async function abrirModalEdicao(produtoId) {
 }
 
 
-
 function salvarAlteracoesProduto() {
     let productId = document.getElementById('btnSalvarEdicaoProduto').dataset.produtoId;
 
@@ -463,7 +447,6 @@ function salvarAlteracoesProduto() {
         chamaAlert('alert-danger', 'Erro ao atualizar o produto!');
     }
 }
-
 
 document.getElementById('btnSalvarEdicaoProduto').addEventListener('click', function () {
     salvarAlteracoesProduto();
