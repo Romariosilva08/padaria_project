@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', function () {
     const nomeUsuario = localStorage.getItem('nome-usuario'); // Usando 'nome-usuario' como chave
     if (!nomeUsuario) {
@@ -23,17 +21,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-
-
-const inputCheck = document.querySelector('#modo-noturno')
-const elemento = document.querySelector('body')
+// Configuração do modo noturno
+const inputCheck = document.querySelector('#modo-noturno');
+const elemento = document.querySelector('body');
 
 inputCheck.addEventListener('click', () => {
-    const modo = inputCheck.checked ? 'dark' : 'light'
-    elemento.setAttribute("data-bs-theme", modo)
-})
+    const modo = inputCheck.checked ? 'dark' : 'light';
+    elemento.setAttribute("data-bs-theme", modo);
+});
 
-
+// Função de logout
 function logout() {
     // Limpar as informações do usuário da sessão
     localStorage.removeItem('nome-usuario');

@@ -1,3 +1,4 @@
+// Funções de validação
 function validateName(name) {
     const namePattern = /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/; // Inclui caracteres acentuados
     return namePattern.test(name);
@@ -8,184 +9,223 @@ function validatePassword(password) {
     return passwordPattern.test(password);
 }
 
-document.getElementById('register-form').addEventListener('submit', function(event) {
-    event.preventDefault();
+function validateEmail(email) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+}
+
+function displayError(element, message) {
+    element.textContent = message;
+}
+
+// Registro do formulário
+let form = document.getElementById('register-form');
+let submit = document.getElementById('btn-submit');
+
+form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
     let isValid = true;
 
-    // Email validation
-    const email = document.getElementById('email');
-    const emailError = document.getElementById('email-error');
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email.value)) {
-        isValid = false;
-        emailError.textContent = 'E-mail inválido.';
-    } else {
-        emailError.textContent = '';
-    }
-
-    // Name validation
+    // Validação do Nome
     const name = document.getElementById('name');
     const nameError = document.getElementById('name-error');
     if (name.value.length < 3 || name.value.length > 16 || !validateName(name.value)) {
         isValid = false;
-        nameError.textContent = 'O nome deve ter entre 3 e 16 caracteres e conter apenas letras.';
+        displayError(nameError, 'O nome deve ter entre 3 e 16 caracteres e conter apenas letras.');
     } else {
-        nameError.textContent = '';
+        displayError(nameError, '');
     }
 
-    // Lastname validation
+    // Validação do Sobrenome
     const lastname = document.getElementById('lastname');
     const lastnameError = document.getElementById('lastname-error');
     if (!validateName(lastname.value)) {
         isValid = false;
-        lastnameError.textContent = 'O sobrenome deve conter apenas letras.';
+        displayError(lastnameError, 'O sobrenome deve conter apenas letras.');
     } else {
-        lastnameError.textContent = '';
+        displayError(lastnameError, '');
     }
 
-    // Password validation
+    // Validação do Email
+    const email = document.getElementById('email');
+    const emailError = document.getElementById('email-error');
+    if (!validateEmail(email.value)) {
+        isValid = false;
+        displayError(emailError, 'E-mail inválido.');
+    } else {
+        displayError(emailError, '');
+    }
+
+    // Validação da Senha
     const password = document.getElementById('password');
     const passwordError = document.getElementById('password-error');
     if (!validatePassword(password.value)) {
         isValid = false;
-        passwordError.textContent = 'A senha deve ter pelo menos 6 caracteres e conter letras e números.';
+        displayError(passwordError, 'A senha deve ter pelo menos 6 caracteres e conter letras e números.');
     } else {
-        passwordError.textContent = '';
+        displayError(passwordError, '');
     }
 
-    // Password confirmation validation
+    // Validação da Confirmação de Senha
     const passwordConfirmation = document.getElementById('passwordconfirmation');
     const passwordConfirmationError = document.getElementById('passwordconfirmation-error');
     if (password.value !== passwordConfirmation.value) {
         isValid = false;
-        passwordConfirmationError.textContent = 'As senhas não coincidem.';
+        displayError(passwordConfirmationError, 'As senhas não coincidem.');
     } else {
-        passwordConfirmationError.textContent = '';
+        displayError(passwordConfirmationError, '');
     }
 
-    // Agreement validation
+    // Validação da Aceitação de Termos
     const agreement = document.getElementById('agreement');
     const agreementError = document.getElementById('agreement-error');
     if (!agreement.checked) {
         isValid = false;
-        agreementError.textContent = 'Você deve aceitar os termos de uso.';
+        displayError(agreementError, 'Você deve aceitar os termos de uso.');
     } else {
-        agreementError.textContent = '';
+        displayError(agreementError, '');
     }
 
     if (isValid) {
-        alert('Formulário enviado com sucesso!');
-        // Aqui você pode enviar o formulário
-        // this.submit();
+        // Obtenha os dados do formulário
+        let nome = document.getElementById('name').value;
+        let email = document.getElementById('email').value;
+        let senha = document.getElementById('password').value;
+
+        // Crie um objeto com os dados do usuário
+        let userData = {
+            Nome: nome,
+            Email: email,
+            Senha: senha
+        };
+
+        // Envie os dados do usuário para o servidor
+        fetch('http://localhost:5284/api/usuarios', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+
+                // Salvar o nome do usuário no armazenamento local para exibir posteriormente
+                localStorage.setItem('nome-usuario', data.nome);
+                console.log(localStorage);
+
+                // Redirecionar o usuário para a página Nossos Produtos
+                window.location.href = 'https://localhost:7039/index.html';
+            })
+            .catch((error) => {
+                console.error('Erro:', error);
+            });
     }
 });
 
-document.getElementById('login-form-id').addEventListener('submit', function(event) {
+// Elementos do DOM
+const cadastroForm = document.getElementById('cadastro-form');
+const loginForm = document.getElementById('login-form');
+const toggleLoginLink = document.getElementById('toggle-login');
+const toggleCadastroLink = document.getElementById('toggle-cadastro');
+
+// Função para alternar entre visualização de Cadastro e Login
+function toggleForms(event) {
     event.preventDefault();
+    cadastroForm.style.display = cadastroForm.style.display === 'none' ? 'block' : 'none';
+    loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+}
+
+// Eventos de clique para alternar entre Cadastro e Login
+toggleLoginLink.addEventListener('click', toggleForms);
+toggleCadastroLink.addEventListener('click', toggleForms);
+
+document.getElementById('btn-login').addEventListener('click', function (e) {
+    e.preventDefault();
+
+    // Validações para Login
     let isValid = true;
 
-    // Login Email validation
+    // Email
     const loginEmail = document.getElementById('login-email');
     const loginEmailError = document.getElementById('login-email-error');
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(loginEmail.value)) {
+    if (!validateEmail(loginEmail.value)) {
         isValid = false;
-        loginEmailError.textContent = 'E-mail inválido.';
+        displayError(loginEmailError, 'E-mail inválido.');
     } else {
-        loginEmailError.textContent = '';
+        displayError(loginEmailError, '');
     }
 
-    // Login Password validation
+    // Senha
     const loginPassword = document.getElementById('login-password');
     const loginPasswordError = document.getElementById('login-password-error');
-    if (loginPassword.value.length < 6) {
+    if (!validatePassword(loginPassword.value)) {
         isValid = false;
-        loginPasswordError.textContent = 'A senha deve ter pelo menos 6 caracteres.';
+        displayError(loginPasswordError, 'A senha deve ter pelo menos 6 caracteres e conter letras e números.');
     } else {
-        loginPasswordError.textContent = '';
+        displayError(loginPasswordError, '');
     }
 
     if (isValid) {
-        alert('Login efetuado com sucesso!');
-        // Aqui você pode enviar o formulário
-        // this.submit();
+        // Obtenha os dados do formulário de login
+        let email = loginEmail.value;
+        let senha = loginPassword.value;
+
+        // Crie um objeto com os dados de login do usuário
+        let userData = {
+            Email: email,
+            Senha: senha
+        };
+
+        // Envie os dados do usuário para o servidor
+        fetch('http://localhost:5284/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Erro ao efetuar o login');
+                }
+
+                // Add try-catch block here
+                try {
+                    return response.json();
+                } catch (error) {
+                    console.error('Error parsing JSON:', error, response);
+                    throw error;
+                }
+            })
+            .then((data) => {
+                console.log(data); // Exibe o objeto data no console
+                if (data && data.nome) {
+                    console.log(data.token); // Access the token like this
+
+                    // Salvar o nome do usuário no armazenamento local para exibir posteriormente
+                    localStorage.setItem('nome-usuario', data.nome);
+
+                    // Atualize o conteúdo do nome do usuário no header
+                    const nomeUsuarioElement = document.getElementById('nome-usuario');
+                    if (nomeUsuarioElement) {
+                        nomeUsuarioElement.textContent = `Seja bem-vindo(a), ${data.nome}!`;
+                    } else {
+                        console.error('Elemento com ID "nome-usuario" não encontrado na página.');
+                    }
+
+                    // Redirecione para a página de destino após um pequeno intervalo para garantir que o nome do usuário seja exibido
+                    setTimeout(() => {
+                        window.location.href = 'https://localhost:7039/index.html';
+                    }, 1000); // Redirecionar após 1 segundo
+                } else {
+                    console.error('O objeto de dados não contém a propriedade "nome".', data);
+                }
+            })
+            .catch((error) => {
+                console.error('Erro:', error);
+            });
     }
 });
-
-document.getElementById('forgot-password-form-id').addEventListener('submit', function(event) {
-    event.preventDefault();
-    let isValid = true;
-
-    // Forgot Email validation
-    const forgotEmail = document.getElementById('forgot-email');
-    const forgotEmailError = document.getElementById('forgot-email-error');
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(forgotEmail.value)) {
-        isValid = false;
-        forgotEmailError.textContent = 'E-mail inválido.';
-    } else {
-        forgotEmailError.textContent = '';
-    }
-
-    if (isValid) {
-        alert('Link de redefinição de senha enviado com sucesso!');
-        // Aqui você pode enviar o formulário
-        // this.submit();
-    }
-});
-
-// Toggle between forms
-document.getElementById('toggle-login').addEventListener('click', function(event) {
-    event.preventDefault();
-    document.getElementById('cadastro-form').style.display = 'none';
-    document.getElementById('login-form').style.display = 'block';
-    document.getElementById('forgot-password-form').style.display = 'none';
-});
-
-document.getElementById('toggle-cadastro').addEventListener('click', function(event) {
-    event.preventDefault();
-    document.getElementById('login-form').style.display = 'none';
-    document.getElementById('cadastro-form').style.display = 'block';
-    document.getElementById('forgot-password-form').style.display = 'none';
-});
-
-document.getElementById('toggle-forgot-password').addEventListener('click', function(event) {
-    event.preventDefault();
-    document.getElementById('login-form').style.display = 'none';
-    document.getElementById('forgot-password-form').style.display = 'block';
-    document.getElementById('cadastro-form').style.display = 'none';
-});
-
-document.getElementById('toggle-login-forgot').addEventListener('click', function(event) {
-    event.preventDefault();
-    document.getElementById('forgot-password-form').style.display = 'none';
-    document.getElementById('login-form').style.display = 'block';
-    document.getElementById('cadastro-form').style.display = 'none';
-});
-
-// Pega o modal
-var modal = document.getElementById("terms-modal");
-
-// Pega o link que abre o modal
-var termsLink = document.getElementById("terms-link");
-
-// Pega o elemento <span> que fecha o modal
-var span = document.getElementsByClassName("close")[0];
-
-// Quando o usuário clicar no link, abre o modal
-termsLink.onclick = function(event) {
-    event.preventDefault(); // Previne o comportamento padrão do link
-    modal.style.display = "block";
-}
-
-// Quando o usuário clicar no <span> (x), fecha o modal
-span.onclick = function() {
-    modal.style.display = "none";
-}
-
-// Quando o usuário clicar em qualquer lugar fora do modal, fecha o modal
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}

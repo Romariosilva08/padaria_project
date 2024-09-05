@@ -455,14 +455,6 @@ document.getElementById('btnSalvarEdicaoProduto').addEventListener('click', func
 
 
 
-
-
-
-
-
-
-
-
 //shopping cart
 const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
 addToCartButtons.forEach(button => {
