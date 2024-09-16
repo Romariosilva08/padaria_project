@@ -10,7 +10,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     iniciarFuncionalidadePesquisa()
 
     handleRefreshButtonClick();
-    
+
+    renderCharts();
 })
 
 async function obterProdutosDaAPI() {
@@ -124,6 +125,11 @@ async function renderizaTabelaItens(dataProdutos) {
     }
 
     tabela = $('#productsDatatable').DataTable({
+
+        dom: 'Bfrtip',  
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'  
+        ],
 
 
         "data": dataProdutos,
@@ -455,56 +461,124 @@ document.getElementById('btnSalvarEdicaoProduto').addEventListener('click', func
 
 
 
-//shopping cart
-const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-addToCartButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const row = button.closest('tr');
-        const id = row.dataset.id;
-        const quantidade = row.querySelector('.qty-input').value;
-        const preco = parseFloat(row.querySelector('td:nth-child(2)').innerText.replace('R$ ', ''));
+////shopping cart
+//const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+//addToCartButtons.forEach(button => {
+//    button.addEventListener('click', () => {
+//        const row = button.closest('tr');
+//        const id = row.dataset.id;
+//        const quantidade = row.querySelector('.qty-input').value;
+//        const preco = parseFloat(row.querySelector('td:nth-child(2)').innerText.replace('R$ ', ''));
 
-        comprarProduto(id, quantidade, preco);
-    });
-});
+//        comprarProduto(id, quantidade, preco);
+//    });
+//});
 
-async function comprarProduto(id, quantidade, preco) {
-    const detalhesCompra = {
-        ProdutoId: id,
-        Quantidade: quantidade,
-        Preco: preco
-    };
+//async function comprarProduto(id, quantidade, preco) {
+//    const detalhesCompra = {
+//        ProdutoId: id,
+//        Quantidade: quantidade,
+//        Preco: preco
+//    };
 
+//    try {
+//        const response = await fetch('/api/produtos/comprar', {
+//            method: 'POST',
+//            headers: {
+//                'Content-Type': 'application/json'
+//            },
+//            body: JSON.stringify(detalhesCompra)
+//        });
+
+//        if (!response.ok) {
+//            throw new Error('Erro ao comprar o produto.');
+//        }
+
+//        const data = await response.json();
+//        console.log('Compra realizada com sucesso:', data);
+
+//        atualizarCarrinho(detalhesCompra);
+//    } catch (error) {
+//        console.error('Erro ao comprar o produto:', error);
+//    }
+//}
+
+//function atualizarCarrinho(detalhesCompra) {
+//    // Update the cart UI or navigate to the cart page
+//    const cart = document.getElementById('cart');
+//    const cartItem = document.createElement('li');
+//    cartItem.innerText = `Produto: ${detalhesCompra.Preco}, Quantidade: ${detalhesCompra.Quantidade}, Total: ${detalhesCompra.Preco * detalhesCompra.Quantidade}`;
+//    cart.appendChild(cartItem);
+
+//    // Alternatively, you can navigate to the cart page
+//    // window.location.href = '/carrinho';
+//}
+
+
+async function renderCharts() {
     try {
-        const response = await fetch('/api/produtos/comprar', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
+        const dataProdutos = await obterProdutosDaAPI();
+
+        const stockLevelData = dataProdutos.reduce((acc, produto) => {
+            acc.labels.push(produto.nome);
+            acc.data.push(produto.quantidade);
+            return acc;
+        }, { labels: [], data: [] });
+
+        const ctxStockLevel = document.getElementById('stockLevelChart').getContext('2d');
+        new Chart(ctxStockLevel, {
+            type: 'bar',
+            data: {
+                labels: stockLevelData.labels,
+                datasets: [{
+                    label: 'Níveis de Estoque',
+                    data: stockLevelData.data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
             },
-            body: JSON.stringify(detalhesCompra)
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
         });
 
-        if (!response.ok) {
-            throw new Error('Erro ao comprar o produto.');
-        }
+        // Placeholder for sales data chart
+        const salesData = {
+            labels: ['Produto A', 'Produto B', 'Produto C'],
+            datasets: [{
+                label: 'Vendas',
+                data: [120, 150, 180],
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1
+            }]
+        };
 
-        const data = await response.json();
-        console.log('Compra realizada com sucesso:', data);
+        const ctxSales = document.getElementById('salesChart').getContext('2d');
+        new Chart(ctxSales, {
+            type: 'line',
+            data: salesData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 
-        // Update the cart UI or navigate to the cart page
-        atualizarCarrinho(detalhesCompra);
     } catch (error) {
-        console.error('Erro ao comprar o produto:', error);
+        console.error('Erro ao carregar dados para os gráficos:', error);
     }
 }
 
-function atualizarCarrinho(detalhesCompra) {
-    // Update the cart UI or navigate to the cart page
-    const cart = document.getElementById('cart');
-    const cartItem = document.createElement('li');
-    cartItem.innerText = `Produto: ${detalhesCompra.Preco}, Quantidade: ${detalhesCompra.Quantidade}, Total: ${detalhesCompra.Preco * detalhesCompra.Quantidade}`;
-    cart.appendChild(cartItem);
-
-    // Alternatively, you can navigate to the cart page
-    // window.location.href = '/carrinho';
+function handleExportButtonClick() {
+    document.getElementById('exportData').addEventListener('click', () => {
+        tabela.button('.buttons-excel').trigger();
+    });
 }

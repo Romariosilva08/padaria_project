@@ -205,7 +205,6 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
                 if (data && data.nome) {
                     console.log(data.token); // Access the token like this
 
-                    // Salvar o nome do usuário no armazenamento local para exibir posteriormente
                     localStorage.setItem('nome-usuario', data.nome);
 
                     // Atualize o conteúdo do nome do usuário no header
@@ -216,7 +215,6 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
                         console.error('Elemento com ID "nome-usuario" não encontrado na página.');
                     }
 
-                    // Redirecione para a página de destino após um pequeno intervalo para garantir que o nome do usuário seja exibido
                     setTimeout(() => {
                         window.location.href = 'https://localhost:7039/index.html';
                     }, 1000); // Redirecionar após 1 segundo
@@ -228,4 +226,41 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
                 console.error('Erro:', error);
             });
     }
+});
+
+
+document.getElementById('forgot-password-form-id').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // Validação do E-mail
+    const forgotEmail = document.getElementById('forgot-email');
+    const forgotEmailError = document.getElementById('forgot-email-error');
+    if (!validateEmail(forgotEmail.value)) {
+        displayError(forgotEmailError, 'E-mail inválido.');
+        return;
+    } else {
+        displayError(forgotEmailError, '');
+    }
+
+    const email = forgotEmail.value;
+
+    // Envie os dados para o servidor
+    fetch('http://localhost:5284/api/recuperar-senha', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ Email: email }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            // Mostrar mensagem de sucesso
+            alert('Um link para redefinição de senha foi enviado para seu e-mail.');
+            // Opcional: redirecionar ou limpar o formulário
+            document.getElementById('forgot-password-form-id').reset();
+        })
+        .catch((error) => {
+            console.error('Erro:', error);
+        });
 });
