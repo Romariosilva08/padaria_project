@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Cadastro de usuário</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+    <div id="main-container">
+        <h1>Cadastre-se para acessar o sistema</h1>
+        <div id="cadastro-form">
+            <form id="register-form" action="">
+                <div class="full-box">
+                    <label for="email">E-mail</label>
+
+                    <input type="email" id="email" name="email" placeholder="Digite seu e-mail">
+                    <span class="error" id="email-error"></span>
+                </div>
+                <div class="half-box spacing">
+                    <label for="name">Nome</label>
+                    <input type="text" id="name" name="name" placeholder="Digite seu nome">
+                    <span class="error" id="name-error"></span>
+                </div>
+                <div class="half-box">
+                    <label for="lastname">Sobrenome</label>
+                    <input type="text" id="lastname" name="lastname" placeholder="Digite seu sobrenome">
+                    <span class="error" id="lastname-error"></span>
+                </div>
+                <div class="half-box spacing">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" placeholder="Digite sua senha">
+                    <span class="error" id="password-error"></span>
+                </div>
+                <div class="half-box">
+                    <label for="passwordconfirmation">Confirmação de senha</label>
+                    <input type="password" id="passwordconfirmation" name="passwordconfirmation" placeholder="Digite novamente sua senha">
+                    <span class="error" id="passwordconfirmation-error"></span>
+                </div>
+                <div>
+                    <input type="checkbox" id="agreement" name="agreement">
+                    <label for="agreement" id="agreement-label">Eu li e aceito os <a href="#" id="terms-link">termos de uso</a></label>
+                    <span class="error" id="agreement-error"></span>
+                </div>
+                <div class="full-box">
+                    <input id="btn-submit" type="submit" value="Registrar">
+                </div>
+            </form>
+            <p>Já possui uma conta? <a href="#" id="toggle-login">Faça login aqui</a>.</p>
+        </div>
+
+        <!-- Modal -->
+        <div id="terms-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div class="terms-content">
+                    <h2>Termos de Uso</h2>
+                    <ul>
+                        <li><b>Aceitação dos Termos:</b> Ao acessar e utilizar o site da Padaria Delícias do Trigo, você concorda em cumprir e estar legalmente vinculado aos seguintes Termos de Uso. Se você não concordar com qualquer parte destes termos, não deverá utilizar nosso site.</li>
+                        <li><b>Uso do Site:</b> Todo o conteúdo disponibilizado no site, incluindo textos, imagens, vídeos e outros materiais, é de propriedade exclusiva da Padaria Delícias do Trigo ou de seus licenciadores e está protegido por leis de direitos autorais.</li>
+                        <li><b>Cadastro de Usuário:</b> Para acessar determinadas funcionalidades do site, pode ser necessário o cadastro do usuário. Você concorda em fornecer informações verdadeiras, precisas, atuais e completas durante o processo de registro.</li>
+                        <li><b>Privacidade:</b> Coletamos e utilizamos suas informações pessoais de acordo com nossa Política de Privacidade. Ao utilizar nosso site, você concorda com a coleta e uso de informações conforme descrito na Política de Privacidade.</li>
+                        <li>
+                            <b>Conduta do Usuário:</b> Você concorda em não utilizar o site para:
+                            <ul>
+                                <li>Publicar ou transmitir qualquer conteúdo ilegal, ofensivo, difamatório, ou que viole os direitos de terceiros;</li>
+                                <li>Enviar spam ou mensagens não solicitadas;</li>
+                                <li>Realizar qualquer atividade que interfira ou interrompa o funcionamento do site.</li>
+                            </ul>
+                        </li>
+                        <li><b>Compra de Produtos:</b> Todos os pedidos feitos através do site estão sujeitos à aceitação e disponibilidade. Reservamo-nos o direito de recusar qualquer pedido a nosso critério.</li>
+                        <li><b>Limitação de Responsabilidade:</b> O site é fornecido "como está" e "conforme disponível", sem garantias de qualquer tipo, expressas ou implícitas.</li>
+                        <li><b>Modificações nos Termos de Uso:</b> Reservamo-nos o direito de modificar estes Termos de Uso a qualquer momento. As alterações entrarão em vigor imediatamente após a publicação no site. Seu uso continuado do site após a publicação das alterações constitui sua aceitação dos novos Termos de Uso.</li>
+                        <li><b>Lei Aplicável:</b> Estes Termos de Uso são regidos pelas leis do Brasil. Qualquer disputa decorrente ou relacionada a estes termos será resolvida exclusivamente nos tribunais competentes do Brasil.</li>
+                        <li><b>Contato:</b> Se você tiver quaisquer dúvidas sobre estes Termos de Uso, entre em contato conosco pelo email <strong>atendimento@deliciasdotrigo.com.br</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="login-form" style="display: none;">
+            <form id="login-form-id" action="">
+                <div class="full-box">
+                    <label for="login-email">E-mail</label>
+                    <input type="email" id="login-email" name="login-email" placeholder="Digite seu e-mail">
+                    <span class="error" id="login-email-error"></span>
+                </div>
+                <div class="full-box">
+                    <label for="login-password">Senha</label>
+                    <input type="password" id="login-password" name="login-password" placeholder="Digite sua senha">
+
+                    <span class="error" id="login-password-error"></span>
+                </div>
+                <div class="full-box">
+                    <input id="btn-login" type="submit" value="Login">
+                </div>
+            </form>
+            <p>Ainda não tem uma conta? <a href="#" id="toggle-cadastro">Cadastre-se aqui</a>.</p>
+
+            <p>Esqueceu sua senha? <a href="#" id="toggle-forgot-password">Recuperar senha</a>.</p>
+        </div>
+
+        <div id="forgot-password-form" style="display: none;">
+            <h2>Esqueci minha senha</h2>
+            <form id="forgot-password-form-id" action="">
+                <div class="full-box">
+                    <label for="forgot-email">E-mail</label>
+                    <input type="email" id="forgot-email" name="forgot-email" placeholder="Digite seu e-mail">
+                    <span class="error" id="forgot-email-error"></span>
+                </div>
+                <div class="full-box">
+                    <input id="btn-forgot-password" type="submit" value="Enviar link de redefinição de senha">
+                </div>
+            </form>
+            <p>Lembrei da senha? <a href="#" id="toggle-login-forgot">Faça login aqui</a>.</p>
+        </div>
+    </div>
+
+    <script>
+        // Funcionalidade para abrir e fechar o modal
+        const termsLink = document.getElementById('terms-link');
+        const termsModal = document.getElementById('terms-modal');
+        const closeModal = document.getElementsByClassName('close')[0];
+
+        termsLink.onclick = function() {
+            termsModal.style.display = "block";
+        }
+
+        closeModal.onclick = function() {
+            termsModal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == termsModal) {
+                termsModal.style.display = "none";
+            }
+        }
+    </script>
+
+    <script src="assets/js/cadastro.js"></script>
+
+</body>
+</html>

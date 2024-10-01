@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Produtos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="mb-4">Dashboard de Produtos</h1>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <canvas id="categoryChart"></canvas>
+            </div>
+            <div class="col-md-6 mb-4">
+                <canvas id="topSellingChart"></canvas>
+            </div>
+            <div class="col-md-6 mb-4">
+                <canvas id="stockByCategoryChart"></canvas>
+            </div>
+            <div class="col-md-6 mb-4">
+                <canvas id="inOutChart"></canvas>
+            </div>
+            <div class="col-md-6 mb-4">
+                <canvas id="priceTrendChart"></canvas>
+            </div>
+            <div class="col-md-6 mb-4">
+                <canvas id="stockStatusChart"></canvas>
+            </div>
+            <div class="col-md-6 mb-4">
+                <canvas id="productionByMonthChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $.get('http://localhost:5284/api/produtos', function (data) {
+                const categories = [];
+                const categoryCounts = {};
+                const stockByCategory = {};
+                const topSelling = [];
+                const stockStatus = { 'Estoque alto': 0, 'Estoque médio': 0, 'Estoque baixo': 0 };
+                const priceTrend = {};
+                const productionByMonth = {};
+                const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+                data.forEach(product => {
+                    if (!categoryCounts[product.categoria]) {
+                        categoryCounts[product.categoria] = 0;
+                    }
+                    categoryCounts[product.categoria]++;
+
+                    if (!stockByCategory[product.categoria]) {
+                        stockByCategory[product.categoria] = 0;
+                    }
+                    stockByCategory[product.categoria] += product.quantidade;
+
+                    topSelling.push({ name: product.nome, quantity: product.quantidade });
+
+                    if (stockStatus[product.status] !== undefined) {
+                        stockStatus[product.status]++;
+                    }
+
+                    const productionMonth = new Date(product.dataProducao).getMonth();
+                    if (!priceTrend[months[productionMonth]]) {
+                        priceTrend[months[productionMonth]] = [];
+                    }
+                    priceTrend[months[productionMonth]].push(product.preco);
+
+                    if (!productionByMonth[months[productionMonth]]) {
+                        productionByMonth[months[productionMonth]] = 0;
+                    }
+                    productionByMonth[months[productionMonth]] += product.quantidade;
+                });
+
+                const categoryChartCtx = document.getElementById('categoryChart').getContext('2d');
+                new Chart(categoryChartCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(categoryCounts),
+                        datasets: [{
+                            data: Object.values(categoryCounts),
+                            backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56']
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        return `${tooltipItem.label}: ${tooltipItem.raw} produtos`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                const topSellingChartCtx = document.getElementById('topSellingChart').getContext('2d');
+                new Chart(topSellingChartCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: topSelling.map(p => p.name),
+                        datasets: [{
+                            label: 'Quantidade Vendida',
+                            data: topSelling.map(p => p.quantity),
+                            backgroundColor: '#36a2eb'
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+
+                const stockByCategoryChartCtx = document.getElementById('stockByCategoryChart').getContext('2d');
+                new Chart(stockByCategoryChartCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(stockByCategory),
+                        datasets: [{
+                            label: 'Quantidade em Estoque',
+                            data: Object.values(stockByCategory),
+                            backgroundColor: '#ffce56'
+                        }]
+                    }
+                });
+
+                const inOutChartCtx = document.getElementById('inOutChart').getContext('2d');
+                new Chart(inOutChartCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Entradas', 'Saídas'],
+                        datasets: [{
+                            label: 'Quantidade',
+                            data: [Object.values(stockByCategory).reduce((a, b) => a + b, 0), 0],
+                            backgroundColor: '#ff6384',
+                            borderColor: '#ff6384',
+                            fill: false
+                        }]
+                    }
+                });
+
+                const priceTrendChartCtx = document.getElementById('priceTrendChart').getContext('2d');
+                new Chart(priceTrendChartCtx, {
+                    type: 'line',
+                    data: {
+                        labels: Object.keys(priceTrend),
+                        datasets: [{
+                            label: 'Variação de Preço',
+                            data: Object.keys(priceTrend).map(month => {
+                                const prices = priceTrend[month];
+                                return prices.length ? prices.reduce((a, b) => a + b, 0) / prices.length : 0;
+                            }),
+                            borderColor: '#36a2eb',
+                            fill: false
+                        }]
+                    }
+                });
+
+                const stockStatusChartCtx = document.getElementById('stockStatusChart').getContext('2d');
+                new Chart(stockStatusChartCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(stockStatus),
+                        datasets: [{
+                            data: Object.values(stockStatus),
+                            backgroundColor: ['#28a745', '#ffc107', '#dc3545']
+                        }]
+                    }
+                });
+
+                const productionByMonthChartCtx = document.getElementById('productionByMonthChart').getContext('2d');
+                new Chart(productionByMonthChartCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(productionByMonth),
+                        datasets: [{
+                            label: 'Quantidade Produzida',
+                            data: Object.values(productionByMonth),
+                            backgroundColor: '#ffce56'
+                        }]
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

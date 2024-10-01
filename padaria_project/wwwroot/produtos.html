@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./assets/imagens/favicon.png" type="image/x-icon">
+    <title>Pães e prosa - Estoque</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="./assets/css/estilos.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Barlow:wght@400;600&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />
+
+    <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+</head>
+
+<body>
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-sm-12 position-relative">
+                <div class="alert position-fixed d-none" role="alert" style="z-index: 2; margin-left: -25px; width: 100%;" id="alert">
+                    ...
+                </div>
+            </div>
+            <div class="col-12 col-12 d-flex justify-content-between align-items-center flex-wrap p-1">
+                <h4 class="custom-title">Produtos em estoque</h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb p-2 mb-0 custom-breadcrumb">
+                        <li class="breadcrumb-item"><a href="./index.html"><i class="ri-home-line"></i>Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Listar produtos</li>
+
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="col-xl-6 col-lg-12 d-flex flex-column mx-2 justify-content-between">
+                <div class="d-flex row align-items-center">
+                    <div class="col-lg-7 col-8 mb-xl-0 mb-1">
+                        <input type="text" id="searchInput" class="form-control form-height" placeholder="Pesquisar...">
+                    </div>
+
+                    <div class="col-1 d-flex gap-1 justify-content-between">
+                        <button id="btnRefresh" type="button" class="btn btn-primary custom-btn-color form-height"><i class="ri-refresh-line"></i></button>
+                        <button class="btn btn-primary custom-btn-color form-height" id="btnNovoProduto" style="min-width: 100px; padding: 0 10px;">Novo item</button>
+                        <a href="dashboard.html" class="btn btn-secondary custom-btn-color form-height" style="min-width: 100px; padding: 0 10px;">Dashboard</a>
+
+                    </div>
+                </div>
+                <div class="input-group mb-2" style="font-size: 0.8rem;">Pesquise pelo produto, categoria e preço.</div>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-12">
+                <div class="tab-content">
+                    <div class="tab-pane show active" role="tabpanel">
+                        <div id="product-datatable_wrapper" class="dataTables_wrapper">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card-body">
+                                        <div class="table-responsive" style="overflow-y: auto;">
+                                            <table class="table table-centered table-striped table-hover w-100 nowrap dt-responsive dataTable no-footer dtr-inline" id="productsDatatable" aria-describedby="basic-datatable_info;">
+
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th class="sorting_disabled sorting_asc no-sort" tabindex="0"
+                                                            aria-controls="products-datatable" rowspan="1" colspan="1"
+                                                            aria-sort="ascending"
+                                                            aria-label="Product: activate to sort column descending">
+                                                            Produto
+                                                        </th>
+                                                        <th class="sorting_disabled sorting_asc no-sort" tabindex="0" aria-controls="products-datatable"
+                                                            rowspan="1" colspan="1"
+                                                            aria-label="Category: activate to sort column ascending">
+                                                            Categoria
+                                                        </th>
+
+                                                        <th class="sorting_disabled sorting_asc no-sort" tabindex="0" aria-controls="products-datatable"
+                                                            rowspan="1" colspan="1"
+                                                            aria-label="Added Date: activate to sort column ascending">
+                                                            Data de
+                                                            produção
+                                                        </th>
+
+                                                        <th class="sorting_disabled sorting_asc no-sort" tabindex="0" aria-controls="products-datatable"
+                                                            rowspan="1" colspan="1"
+                                                            aria-label="Price: activate to sort column ascending">Preço</th>
+
+                                                        <th class="sorting" tabindex="0" aria-controls="products-datatable"
+                                                            rowspan="1" colspan="1"
+                                                            aria-label="Quantity: activate to sort column ascending">
+                                                            Quantidade
+                                                        </th>
+
+                                                        <th class="sorting_disabled sorting_asc no-sort text-center" tabindex="0" aria-controls="products-datatable" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending">Status</th>
+
+                                                        <th class="sorting_disabled sorting_asc no-sort" tabindex="0" aria-controls="products-datatable" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending">Ações</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col -->
+
+        </div>
+    </div>
+    <!-- end row -->
+    <!-- Modal Novo Produto -->
+    <div class="modal fade" id="modalNovoProduto" tabindex="-1" role="dialog" aria-labelledby="modalNovoProdutoLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalNovoProdutoLabel"><span id="modalTituloProduto">Novo Produto</span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                </div>
+                <div class="modal-body">
+                    <!-- Formulário para criar um novo produto -->
+                    <form id="formNovoProduto">
+                        <div class="form-group">
+                            <label for="nomeProduto">Nome do Produto</label>
+                            <input type="text" class="form-control" id="nomeProduto" placeholder="Digite o nome do produto" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoriaProduto">Categoria do Produto</label>
+                            <input type="text" class="form-control" id="categoriaProduto" placeholder="Digite a categoria do produto" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dataProducao">Data de Produção</label>
+                            <input type="date" name="date" class="form-control" id="dataProducao" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="precoProduto">Preço do Produto</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="precoProduto" placeholder="Digite o preço do produto" oninput="validity.valid || (value = '');" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantidadeProduto">Quantidade do Produto</label>
+                            <input type="number" min="0" class="form-control" id="quantidadeProduto" placeholder="Digite a quantidade do produto" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnFecharModal">Fechar</button>
+
+                    <button type="button" class="btn btn-primary" id="btnSalvarNovoProduto">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edição de Produto -->
+    <div class="modal fade" id="modalEdicaoProduto" tabindex="-1" role="dialog" aria-labelledby="modalEdicaoProdutoLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEdicaoProdutoLabel">Editar Produto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulário para editar o produto -->
+                    <form id="formEdicaoProduto">
+                        <div class="form-group">
+                            <label for="editNomeProduto">Nome do Produto</label>
+                            <input type="text" class="form-control" id="editNomeProduto" placeholder="Digite o nome do produto" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editCategoriaProduto">Categoria do Produto</label>
+                            <input type="text" class="form-control" id="editCategoriaProduto" placeholder="Digite a categoria do produto" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editDataProducao">Data de Produção</label>
+                            <input type="date" class="form-control" id="editDataProducao" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPrecoProduto">Preço do Produto</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="editPrecoProduto" placeholder="Digite o preço do produto" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editQuantidadeProduto">Quantidade do Produto</label>
+                            <input type="number" min="0" class="form-control" id="editQuantidadeProduto" placeholder="Digite a quantidade do produto" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="btnSalvarEdicaoProduto">Salvar Alterações</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/script_produtos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.2.2/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.2/js/buttons.print.min.js"></script>
+
+
+</body>
+
+</html>
