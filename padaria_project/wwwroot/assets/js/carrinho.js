@@ -1,14 +1,10 @@
 ﻿let totalAmount = 0; // Valor total dos produtos
-// let discount = 0; // Valor do desconto, se aplicável
-// let deliveryFee = 0; // Taxa de entrega, se aplicável
-
-
+let cartItems = []; // Array para armazenar os produtos no carrinho
 
 document.addEventListener('DOMContentLoaded', () => {
     carregarProdutos();
     iniciarFuncionalidadeCarrinho();
 });
-
 
 async function carregarProdutos() {
     try {
@@ -65,7 +61,8 @@ function adicionarAoCarrinho(id, quantidade, preco, nome) {
         Nome: nome
     };
 
-    comprarProduto(id, detalhesCompra, preco * quantidade); 
+    cartItems.push(detalhesCompra); // Adiciona o item ao array
+    comprarProduto(id, detalhesCompra, preco * quantidade);
 }
 
 async function comprarProduto(id, detalhesCompra, total) {
@@ -85,7 +82,8 @@ async function comprarProduto(id, detalhesCompra, total) {
         const data = await response.json();
         console.log('Produto comprado com sucesso:', data);
         atualizarCarrinho(detalhesCompra, total);
-        atualizarResumoPedido(); 
+        atualizarResumoPedido();
+        mostrarMensagem('Produto adicionado ao carrinho com sucesso!', 'success'); // Feedback
     } catch (error) {
         console.error('Erro ao comprar o produto:', error);
         alert('Houve um problema ao adicionar o produto ao carrinho. Tente novamente.');
@@ -98,7 +96,7 @@ function atualizarCarrinho(detalhesCompra, total) {
         const cartItem = document.createElement('li');
         cartItem.innerText = `Produto: ${detalhesCompra.Nome}, Quantidade: ${detalhesCompra.Quantidade}, Total: R$ ${(total).toFixed(2).replace('.', ',')}`;
         cart.appendChild(cartItem);
-        totalAmount += total; 
+        totalAmount += total;
         console.log('Total Amount Atualizado:', totalAmount);
     }
 }
@@ -106,20 +104,15 @@ function atualizarCarrinho(detalhesCompra, total) {
 function atualizarResumoPedido() {
     console.log('Atualizando o resumo do pedido com:', {
         totalAmount: totalAmount,
-        // discount: discount, // Comentado para não usar desconto
-        // deliveryFee: deliveryFee, // Comentado para não usar taxa de entrega
-        finalAmount: totalAmount 
+        finalAmount: totalAmount
     });
 
     const totalAmountElement = document.getElementById('totalAmount');
     const finalAmountElement = document.getElementById('finalAmount');
 
     if (totalAmountElement && finalAmountElement) {
-        // const finalAmount = totalAmount - discount + deliveryFee; // Comentado para não usar desconto e taxa de entrega
-        const finalAmount = totalAmount; // Ajustado para mostrar apenas o valor total
-
         totalAmountElement.innerText = `R$ ${totalAmount.toFixed(2).replace('.', ',')}`;
-        finalAmountElement.innerText = `R$ ${finalAmount.toFixed(2).replace('.', ',')}`; // Ajustado para mostrar apenas o valor total
+        finalAmountElement.innerText = `R$ ${totalAmount.toFixed(2).replace('.', ',')}`;
     } else {
         console.error('Elementos para atualização do resumo do pedido não encontrados.');
     }
@@ -144,4 +137,29 @@ function iniciarFuncionalidadeCarrinho() {
         });
     });
 
+    const removeButtons = document.querySelectorAll('.btn-remove');
+    removeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const row = button.closest('tr');
+            const id = row.dataset.productId;
+            removerDoCarrinho(id);
+        });
+    });
+}
+
+function removerDoCarrinho(id) {
+    cartItems = cartItems.filter(item => item.ProdutoId !== id);
+    atualizarResumoPedido();
+    mostrarMensagem('Produto removido do carrinho.', 'error');
+}
+
+function mostrarMensagem(mensagem, tipo) {
+    const alertElement = document.getElementById('alert');
+    alertElement.classList.remove('d-none');
+    alertElement.classList.add(tipo === 'success' ? 'alert-success' : 'alert-danger');
+    alertElement.innerText = mensagem;
+
+    setTimeout(() => {
+        alertElement.classList.add('d-none');
+    }, 3000);
 }

@@ -7,30 +7,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        canvas {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+    </style>
 </head>
 <body>
     <div class="container my-5">
-        <h1 class="mb-4">Dashboard de Produtos</h1>
+        <h1 class="mb-4 text-center">Dashboard de Produtos</h1>
         <div class="row">
-            <div class="col-md-6 mb-4">
+            <div class="col-lg-4 col-md-6 mb-4">
                 <canvas id="categoryChart"></canvas>
             </div>
-            <div class="col-md-6 mb-4">
+            <div class="col-lg-4 col-md-6 mb-4">
                 <canvas id="topSellingChart"></canvas>
             </div>
-            <div class="col-md-6 mb-4">
+            <div class="col-lg-4 col-md-6 mb-4">
                 <canvas id="stockByCategoryChart"></canvas>
             </div>
-            <div class="col-md-6 mb-4">
+            <div class="col-lg-4 col-md-6 mb-4">
                 <canvas id="inOutChart"></canvas>
             </div>
-            <div class="col-md-6 mb-4">
+            <div class="col-lg-4 col-md-6 mb-4">
                 <canvas id="priceTrendChart"></canvas>
             </div>
-            <div class="col-md-6 mb-4">
+            <div class="col-lg-4 col-md-6 mb-4">
                 <canvas id="stockStatusChart"></canvas>
             </div>
-            <div class="col-md-6 mb-4">
+            <div class="col-12 mb-4">
                 <canvas id="productionByMonthChart"></canvas>
             </div>
         </div>

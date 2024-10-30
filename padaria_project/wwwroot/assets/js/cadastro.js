@@ -1,6 +1,5 @@
-// Funções de validação
 function validateName(name) {
-    const namePattern = /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/; // Inclui caracteres acentuados
+    const namePattern = /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/;
     return namePattern.test(name);
 }
 
@@ -18,7 +17,6 @@ function displayError(element, message) {
     element.textContent = message;
 }
 
-// Registro do formulário
 let form = document.getElementById('register-form');
 let submit = document.getElementById('btn-submit');
 
@@ -27,7 +25,6 @@ form.addEventListener('submit', function (e) {
 
     let isValid = true;
 
-    // Validação do Nome
     const name = document.getElementById('name');
     const nameError = document.getElementById('name-error');
     if (name.value.length < 3 || name.value.length > 16 || !validateName(name.value)) {
@@ -37,7 +34,6 @@ form.addEventListener('submit', function (e) {
         displayError(nameError, '');
     }
 
-    // Validação do Sobrenome
     const lastname = document.getElementById('lastname');
     const lastnameError = document.getElementById('lastname-error');
     if (!validateName(lastname.value)) {
@@ -47,7 +43,6 @@ form.addEventListener('submit', function (e) {
         displayError(lastnameError, '');
     }
 
-    // Validação do Email
     const email = document.getElementById('email');
     const emailError = document.getElementById('email-error');
     if (!validateEmail(email.value)) {
@@ -57,7 +52,6 @@ form.addEventListener('submit', function (e) {
         displayError(emailError, '');
     }
 
-    // Validação da Senha
     const password = document.getElementById('password');
     const passwordError = document.getElementById('password-error');
     if (!validatePassword(password.value)) {
@@ -67,7 +61,6 @@ form.addEventListener('submit', function (e) {
         displayError(passwordError, '');
     }
 
-    // Validação da Confirmação de Senha
     const passwordConfirmation = document.getElementById('passwordconfirmation');
     const passwordConfirmationError = document.getElementById('passwordconfirmation-error');
     if (password.value !== passwordConfirmation.value) {
@@ -77,7 +70,6 @@ form.addEventListener('submit', function (e) {
         displayError(passwordConfirmationError, '');
     }
 
-    // Validação da Aceitação de Termos
     const agreement = document.getElementById('agreement');
     const agreementError = document.getElementById('agreement-error');
     if (!agreement.checked) {
@@ -88,19 +80,16 @@ form.addEventListener('submit', function (e) {
     }
 
     if (isValid) {
-        // Obtenha os dados do formulário
         let nome = document.getElementById('name').value;
         let email = document.getElementById('email').value;
         let senha = document.getElementById('password').value;
 
-        // Crie um objeto com os dados do usuário
         let userData = {
             Nome: nome,
             Email: email,
             Senha: senha
         };
 
-        // Envie os dados do usuário para o servidor
         fetch('http://localhost:5284/api/usuarios', {
             method: 'POST',
             headers: {
@@ -108,47 +97,40 @@ form.addEventListener('submit', function (e) {
             },
             body: JSON.stringify(userData),
         })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
 
-                // Salvar o nome do usuário no armazenamento local para exibir posteriormente
-                localStorage.setItem('nome-usuario', data.nome);
-                console.log(localStorage);
+            localStorage.setItem('nome-usuario', data.nome);
+            console.log(localStorage);
 
-                // Redirecionar o usuário para a página Nossos Produtos
-                window.location.href = 'https://localhost:7039/index.html';
-            })
-            .catch((error) => {
-                console.error('Erro:', error);
-            });
+            window.location.href = 'https://localhost:7039/index.html';
+        })
+        .catch((error) => {
+            console.error('Erro:', error);
+        });
     }
 });
 
-// Elementos do DOM
 const cadastroForm = document.getElementById('cadastro-form');
 const loginForm = document.getElementById('login-form');
 const toggleLoginLink = document.getElementById('toggle-login');
 const toggleCadastroLink = document.getElementById('toggle-cadastro');
 
-// Função para alternar entre visualização de Cadastro e Login
 function toggleForms(event) {
     event.preventDefault();
     cadastroForm.style.display = cadastroForm.style.display === 'none' ? 'block' : 'none';
     loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
 }
 
-// Eventos de clique para alternar entre Cadastro e Login
 toggleLoginLink.addEventListener('click', toggleForms);
 toggleCadastroLink.addEventListener('click', toggleForms);
 
 document.getElementById('btn-login').addEventListener('click', function (e) {
     e.preventDefault();
 
-    // Validações para Login
     let isValid = true;
 
-    // Email
     const loginEmail = document.getElementById('login-email');
     const loginEmailError = document.getElementById('login-email-error');
     if (!validateEmail(loginEmail.value)) {
@@ -158,7 +140,6 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
         displayError(loginEmailError, '');
     }
 
-    // Senha
     const loginPassword = document.getElementById('login-password');
     const loginPasswordError = document.getElementById('login-password-error');
     if (!validatePassword(loginPassword.value)) {
@@ -169,17 +150,14 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
     }
 
     if (isValid) {
-        // Obtenha os dados do formulário de login
         let email = loginEmail.value;
         let senha = loginPassword.value;
 
-        // Crie um objeto com os dados de login do usuário
         let userData = {
             Email: email,
             Senha: senha
         };
 
-        // Envie os dados do usuário para o servidor
         fetch('http://localhost:5284/login', {
             method: 'POST',
             headers: {
@@ -192,7 +170,6 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
                     throw new Error('Erro ao efetuar o login');
                 }
 
-                // Add try-catch block here
                 try {
                     return response.json();
                 } catch (error) {
@@ -201,13 +178,12 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
                 }
             })
             .then((data) => {
-                console.log(data); // Exibe o objeto data no console
+                console.log(data); 
                 if (data && data.nome) {
-                    console.log(data.token); // Access the token like this
+                    console.log(data.token); 
 
                     localStorage.setItem('nome-usuario', data.nome);
 
-                    // Atualize o conteúdo do nome do usuário no header
                     const nomeUsuarioElement = document.getElementById('nome-usuario');
                     if (nomeUsuarioElement) {
                         nomeUsuarioElement.textContent = `Seja bem-vindo(a), ${data.nome}!`;
@@ -217,7 +193,7 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
 
                     setTimeout(() => {
                         window.location.href = 'https://localhost:7039/index.html';
-                    }, 1000); // Redirecionar após 1 segundo
+                    }, 1000);
                 } else {
                     console.error('O objeto de dados não contém a propriedade "nome".', data);
                 }
@@ -232,7 +208,6 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
 document.getElementById('forgot-password-form-id').addEventListener('submit', function (e) {
     e.preventDefault();
 
-    // Validação do E-mail
     const forgotEmail = document.getElementById('forgot-email');
     const forgotEmailError = document.getElementById('forgot-email-error');
     if (!validateEmail(forgotEmail.value)) {
@@ -244,7 +219,6 @@ document.getElementById('forgot-password-form-id').addEventListener('submit', fu
 
     const email = forgotEmail.value;
 
-    // Envie os dados para o servidor
     fetch('http://localhost:5284/api/recuperar-senha', {
         method: 'POST',
         headers: {
@@ -255,9 +229,7 @@ document.getElementById('forgot-password-form-id').addEventListener('submit', fu
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
-            // Mostrar mensagem de sucesso
             alert('Um link para redefinição de senha foi enviado para seu e-mail.');
-            // Opcional: redirecionar ou limpar o formulário
             document.getElementById('forgot-password-form-id').reset();
         })
         .catch((error) => {

@@ -80,26 +80,20 @@ async function deletarProduto(id) {
             throw new Error(`Erro na requisição para ${URL}`);
         }
 
-        // Se a exclusão for bem-sucedida, recarregue os itens de estoque na tabela
         await carregaItensEstoque();
 
-        // Exiba uma mensagem de sucesso
         showSuccessAlert('Produto excluído com sucesso!');
     } catch (error) {
         console.error(error);
-        // Em caso de erro, exiba uma mensagem de erro
         chamaAlert('alert-danger', 'Erro ao excluir o produto!');
     }
 }
 
 function chamaAlert(classe, mensagem) {
-    // Criar elemento de alerta
     const alertElement = $('<div class="alert ' + classe + '" role="alert">' + mensagem + '</div>');
 
-    // Adicionar o elemento de alerta ao corpo do documento
     $('body').append(alertElement);
 
-    // Remover o elemento de alerta após um período de tempo (por exemplo, 5 segundos)
     setTimeout(function () {
         alertElement.fadeOut('slow', function () {
             $(this).remove();
@@ -212,7 +206,6 @@ async function renderizaTabelaItens(dataProdutos) {
     });
 
     tabela.clear().rows.add(dataProdutos).draw();
-//    widthTabela = document.getElementById('productsDatatable').offsetWidth;  
 }
 
 
@@ -223,18 +216,14 @@ function handleResize() {
         let widthAtual = productsDatatable.offsetWidth;
 
         if (widthAtual !== widthTabela) {
-            // Se a largura atual for diferente da largura anterior, redesenha a tabela
             tabela.draw()
             widthTabela = widthAtual;
         } else {
-            // Se a largura não mudou, verifica se é necessário atualizar a tabela em resposta a uma mudança de tamanho da janela
             if (window.innerWidth <= 1024 && !resize) {
                 resize = true;
-                // Recarrega a tabela apenas se necessário
                 carregaItensEstoque();
             } else if (window.innerWidth > 1024 && resize) {
                 resize = false;
-                // Recarrega a tabela apenas se necessário
                 carregaItensEstoque();
             }
         }
@@ -287,7 +276,7 @@ function handleRefreshButtonClick() {
 
 document.getElementById('btnNovoProduto').addEventListener('click', (e) => {
     e.preventDefault();
-    // Abra o modal
+
     //document.getElementById('modalNovoProduto').setAttribute('data-modal-criacao', "true");
     document.getElementById('modalTituloProduto').innerHTML = 'Entrada de Produto...';
     $('#modalNovoProduto').modal('show');
@@ -313,13 +302,10 @@ document.getElementById('btnSalvarNovoProduto').addEventListener('click', async 
         //let dataProducaoDate = new Date(dataProducaoInput.value);
         //let dataProducaoFormatted = dataProducaoDate.toLocaleDateString('pt-BR');
 
-        // Extrair o valor do campo de data
         let dataProducaoValue = dataProducaoInput.value;
 
-        // Criar um novo objeto DateTime
         let dataProducaoDate = new Date(dataProducaoValue);
 
-        // Converter a data para o formato ISOString
         let dataProducaoISOString = dataProducaoDate.toISOString();
 
         const produto = {
@@ -335,7 +321,6 @@ document.getElementById('btnSalvarNovoProduto').addEventListener('click', async 
             const novoProduto = await criarProduto(produto);
             console.log(novoProduto);
 
-            // Close the modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('modalNovoProduto').closest('.modal'));
             modal.hide();         
 
@@ -368,15 +353,12 @@ function clearFormFields() {
     quantidadeProdutoInput.value = '';
 }
 
-
-// Adiciona manipuladores de eventos aos campos do formulário
 nomeProdutoInput.addEventListener('input', updateHighlight);
 categoriaProdutoInput.addEventListener('input', updateHighlight);
 dataProducaoInput.addEventListener('input', updateHighlight);
 precoProdutoInput.addEventListener('input', updateHighlight);
 quantidadeProdutoInput.addEventListener('input', updateHighlight);
 
-// Função para atualizar o destaque
 function updateHighlight() {
     if (this.value.trim()) {
         this.classList.remove('highlighted');
@@ -401,17 +383,15 @@ async function abrirModalEdicao(produtoId) {
         }
 
         const produto = await response.json();
+        const dataProducao = produto.dataProducao.split("T")[0];
 
         document.getElementById('editNomeProduto').value = produto.nome;
         document.getElementById('editCategoriaProduto').value = produto.categoria;
-        document.getElementById('editDataProducao').value = produto.dataProducao;
+        document.getElementById('editDataProducao').value = dataProducao;
         document.getElementById('editPrecoProduto').value = produto.preco;
         document.getElementById('editQuantidadeProduto').value = produto.quantidade;
-
         document.getElementById('btnSalvarEdicaoProduto').dataset.produtoId = produtoId;
 
-
-        // Abrir o modal de edição
         $('#modalEdicaoProduto').modal('show');
     } catch (error) {
         console.error('Erro ao abrir o modal de edição:', error);
@@ -441,15 +421,12 @@ function salvarAlteracoesProduto() {
         }).then(() => {
             carregaItensEstoque();
 
-            // Close the update modal
             $('#modalEdicaoProduto').modal('hide');
 
-            // Show success message
             showSuccessAlert('Produto atualizado com sucesso!');
         });
     } catch (error) {
         console.error(error);
-        // Show error message
         chamaAlert('alert-danger', 'Erro ao atualizar o produto!');
     }
 }
@@ -457,63 +434,6 @@ function salvarAlteracoesProduto() {
 document.getElementById('btnSalvarEdicaoProduto').addEventListener('click', function () {
     salvarAlteracoesProduto();
 });
-
-
-
-
-////shopping cart
-//const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-//addToCartButtons.forEach(button => {
-//    button.addEventListener('click', () => {
-//        const row = button.closest('tr');
-//        const id = row.dataset.id;
-//        const quantidade = row.querySelector('.qty-input').value;
-//        const preco = parseFloat(row.querySelector('td:nth-child(2)').innerText.replace('R$ ', ''));
-
-//        comprarProduto(id, quantidade, preco);
-//    });
-//});
-
-//async function comprarProduto(id, quantidade, preco) {
-//    const detalhesCompra = {
-//        ProdutoId: id,
-//        Quantidade: quantidade,
-//        Preco: preco
-//    };
-
-//    try {
-//        const response = await fetch('/api/produtos/comprar', {
-//            method: 'POST',
-//            headers: {
-//                'Content-Type': 'application/json'
-//            },
-//            body: JSON.stringify(detalhesCompra)
-//        });
-
-//        if (!response.ok) {
-//            throw new Error('Erro ao comprar o produto.');
-//        }
-
-//        const data = await response.json();
-//        console.log('Compra realizada com sucesso:', data);
-
-//        atualizarCarrinho(detalhesCompra);
-//    } catch (error) {
-//        console.error('Erro ao comprar o produto:', error);
-//    }
-//}
-
-//function atualizarCarrinho(detalhesCompra) {
-//    // Update the cart UI or navigate to the cart page
-//    const cart = document.getElementById('cart');
-//    const cartItem = document.createElement('li');
-//    cartItem.innerText = `Produto: ${detalhesCompra.Preco}, Quantidade: ${detalhesCompra.Quantidade}, Total: ${detalhesCompra.Preco * detalhesCompra.Quantidade}`;
-//    cart.appendChild(cartItem);
-
-//    // Alternatively, you can navigate to the cart page
-//    // window.location.href = '/carrinho';
-//}
-
 
 async function renderCharts() {
     try {
@@ -547,7 +467,6 @@ async function renderCharts() {
             }
         });
 
-        // Placeholder for sales data chart
         const salesData = {
             labels: ['Produto A', 'Produto B', 'Produto C'],
             datasets: [{
